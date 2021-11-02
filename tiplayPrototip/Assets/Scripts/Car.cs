@@ -6,9 +6,14 @@ public abstract class Car : MonoBehaviour
 {
 
     public float carHealth;
-    [SerializeField] protected float _carSpeed;
+    public float carSpeed;
+    protected Rigidbody _rBody;
     [SerializeField] protected float _avoidDistance;
 
+    protected void Start()
+    {
+        _rBody = GetComponent<Rigidbody>();
+    }
 
     public abstract void CarCrash();
     public abstract void AvoidObstacles();

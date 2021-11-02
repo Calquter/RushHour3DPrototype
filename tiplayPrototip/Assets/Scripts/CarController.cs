@@ -6,13 +6,8 @@ public class CarController : Car
 {
     [Header("Referances")]
     [SerializeField] private GameObject _playerModel;
-
-    private Rigidbody _rBody;
-
-    void Start()
-    {
-        _rBody = GetComponent<Rigidbody>();
-    }
+    [SerializeField] private LayerMask _obstacleMask;
+    [SerializeField] private Transform _raycastPos;
 
     void Update()
     {
@@ -22,16 +17,16 @@ public class CarController : Car
 
     private void MoveActions()
     {
-        _rBody.velocity = Vector3.forward * _carSpeed;
+        _rBody.velocity = Vector3.forward * carSpeed;
 
 
         if (Input.GetMouseButton(0))
         {
 
-            _carSpeed = Mathf.Lerp(_carSpeed, 35, Time.deltaTime);
+            carSpeed = Mathf.Lerp(carSpeed, 35, Time.deltaTime);
 
             if (transform.position.x > -2)
-                _rBody.velocity += -Vector3.right * (_carSpeed * 0.4f);
+                _rBody.velocity += -Vector3.right * (carSpeed * 0.4f);
 
             if (transform.position.x > -1.5f)
                 RotatePlayerModel(transform.position + transform.right * -2 + transform.forward * 3.5f);
@@ -41,9 +36,10 @@ public class CarController : Car
         }
         else
         {
-            if (transform.position.x < 2)
-                _rBody.velocity += Vector3.right * (_carSpeed * 0.4f);
+            AvoidObstacles();
 
+            if (transform.position.x < 2)
+                _rBody.velocity += Vector3.right * (carSpeed * 0.4f);
 
             if (transform.position.x < 1.5f)
                 RotatePlayerModel(transform.position + transform.right * 2 + transform.forward * 3.5f);
@@ -52,7 +48,6 @@ public class CarController : Car
 
         }
     }
-
     private void RotatePlayerModel(Vector3 target)
     {
         Vector3 dir = target - transform.position;
@@ -62,12 +57,17 @@ public class CarController : Car
        
         
     }
-
     public override void AvoidObstacles()
     {
-       
-    }
+        RaycastHit hitInfo;
 
+        if (Physics.Raycast(_raycastPos.transform.position, _raycastPos.transform.forward, out hitInfo, _avoidDistance, _obstacleMask))
+        {
+
+            carSpeed = Mathf.Lerp(carSpeed, hitInfo.collider.GetComponent<Car>().carSpeed, Time.deltaTime * 1.5f);
+
+        }
+    }
     public override void CarCrash()
     {
         
