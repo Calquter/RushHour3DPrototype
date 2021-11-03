@@ -19,10 +19,14 @@ public class CameraFollow : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        FollowPlayer();
+        if (!GameManager.instance.isGameFinished)
+            FollowPlayer();
+        else
+            FinishedBehaviour();
     }
     private void FollowPlayer()
     {
+
         Transform playerTransform = GameManager.instance.playerOBJ.transform;
 
         _newPos = playerTransform.position + playerTransform.forward * _backSpace + playerTransform.up * _upSpace;
@@ -39,5 +43,13 @@ public class CameraFollow : MonoBehaviour
         {
             _myCam.fieldOfView = Mathf.Lerp(_myCam.fieldOfView, 60, Mathf.Pow(_fovSpeed, 2) * Time.deltaTime);
         }
+    }
+
+    private void FinishedBehaviour()
+    {
+        transform.LookAt(GameManager.instance.playerOBJ.transform);
+
+        transform.position = Vector3.Slerp(transform.position, GameManager.instance.finishLine.transform.position + GameManager.instance.finishLine.transform.forward * 5f + GameManager.instance.finishLine.transform.up * 5, Time.deltaTime * .35f);
+        CameraEffect(false);
     }
 }

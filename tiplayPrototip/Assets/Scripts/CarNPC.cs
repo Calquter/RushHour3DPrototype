@@ -19,7 +19,7 @@ public class CarNPC : Car
         
     }
 
-    public override void TakeDamage()
+    public override void TakeDamage(int multiplier = 1)
     {
         
     }

@@ -10,9 +10,11 @@ public abstract class Car : MonoBehaviour
     protected Rigidbody _rBody;
     [SerializeField] protected float _avoidDistance;
 
+    [Header("Base Class Referances")]
+    [SerializeField] protected ParticleSystem _smokeEffect;
 
     public abstract void CarCrash();
-    public abstract void TakeDamage();
+    public abstract void TakeDamage(int multiplier = 1);
     public abstract void AvoidObstacles();
 
 }

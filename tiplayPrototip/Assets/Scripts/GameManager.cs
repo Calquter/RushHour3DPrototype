@@ -6,17 +6,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    private bool _isGameFinished;
+    public bool isGameFinished;
 
     [Header("Referances")]
     public GameObject playerOBJ;
-    [SerializeField] private GameObject _finishLine;
+    public GameObject finishLine;
 
     private void Awake() => instance = this;
 
     private void Start()
     {
-        UIManager.instance.finishSlider.maxValue = Vector3.Distance(playerOBJ.transform.position, _finishLine.transform.position);
+        UIManager.instance.finishSlider.maxValue = Vector3.Distance(playerOBJ.transform.position, finishLine.transform.position);
     }
     private void Update()
     {
@@ -24,9 +24,9 @@ public class GameManager : MonoBehaviour
     }
     private float CalculateFinishProgress()
     {
-        if (!_isGameFinished)
+        if (!isGameFinished)
         {
-            float distance = Vector3.Distance(playerOBJ.transform.position, _finishLine.transform.position);
+            float distance = Vector3.Distance(playerOBJ.transform.position, finishLine.transform.position);
 
             float progress = UIManager.instance.finishSlider.maxValue - distance;
 

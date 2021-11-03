@@ -10,26 +10,30 @@ public class CarController : Car
     [Header("Referances")]
     [SerializeField] private LayerMask _obstacleMask;
     [SerializeField] private Transform _raycastPos;
-    [SerializeField] private ParticleSystem _smokeEffect;
+    [SerializeField] private ParticleSystem _speedParticle;
     [SerializeField] private CameraFollow _myCamera;
-    
 
-    private bool _canTakeDamage;
+    private bool isDead;
+    public bool isPlayerDead { get { return isDead; } private set { isDead = value; } }
+
     private void Start()
     {
         _rBody = GetComponent<Rigidbody>();
-        _canTakeDamage = true;
+        isPlayerDead = false;
     }
     void Update()
     {
-        MoveActions();
+        if (!isPlayerDead)
+            MoveActions();
     }
-
-
     private void MoveActions()
     {
         _rBody.velocity = transform.forward * carSpeed;
 
+        if (carSpeed > 25 && !_speedParticle.gameObject.activeSelf)
+            _speedParticle.gameObject.SetActive(true);
+        else if (carSpeed < 25 && _speedParticle.gameObject.activeSelf)
+            _speedParticle.gameObject.SetActive(false);
 
         if (Input.GetMouseButton(0))
         {
@@ -43,7 +47,9 @@ public class CarController : Car
             else
                 RotatePlayerModel(transform.position + Vector3.forward * 10.5f);
 
-            _myCamera.CameraEffect(true);
+            if (!GameManager.instance.isGameFinished)
+                _myCamera.CameraEffect(true);
+
 
         }
         else
@@ -79,13 +85,12 @@ public class CarController : Car
         if (Physics.Raycast(_raycastPos.transform.position, _raycastPos.transform.forward, out hitInfo, _avoidDistance, _obstacleMask))
             carSpeed = Mathf.Lerp(carSpeed, hitInfo.collider.GetComponent<Car>().carSpeed, Time.deltaTime * 3.5f);
     }
-    public override void TakeDamage()
+    public override void TakeDamage(int multiplier = 1)
     {
         float damage = carSpeed > _damageThreshold ? carSpeed - _damageThreshold + 1 : 1;
 
-        carHealth -= damage * 2.5f;
+        carHealth -= damage * 2.5f * multiplier;
         UIManager.instance.healthSlider.value = carHealth;
-        _canTakeDamage = false;
 
         if (carHealth <= 50 && !_smokeEffect.gameObject.activeSelf)
         {
@@ -100,18 +105,34 @@ public class CarController : Car
     }
     public override void CarCrash()
     {
-        
+        isPlayerDead = true;
+        carSpeed = 0;
     }
-
     private void OnCollisionEnter(Collision col)
     {
         if (col.collider.tag == "Obstacle")
         {
             if (carSpeed >= _damageThreshold)
             {
-                TakeDamage();
+                Vector3 obsttacleToPlayer = transform.position - col.collider.transform.position;
+
+                if (Vector3.Dot(col.collider.transform.forward.normalized, obsttacleToPlayer.normalized) > 0.5f)
+                    TakeDamage(3);
+                else
+                    TakeDamage();
+
+                print(Vector3.Dot(col.collider.transform.forward.normalized, obsttacleToPlayer.normalized));
+
                 carSpeed = _damageThreshold - 5;
             }
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "FinishLine")
+        {
+            GameManager.instance.isGameFinished = true;
+            _speedParticle.gameObject.SetActive(false);
         }
     }
 }
