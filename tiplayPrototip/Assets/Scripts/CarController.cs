@@ -8,7 +8,6 @@ public class CarController : Car
     [SerializeField] private float _topSpeed;
 
     [Header("Referances")]
-    [SerializeField] private GameObject _carModel;
     [SerializeField] private LayerMask _obstacleMask;
     [SerializeField] private Transform _raycastPos;
     [SerializeField] private ParticleSystem _smokeEffect;
@@ -29,7 +28,7 @@ public class CarController : Car
 
     private void MoveActions()
     {
-        _rBody.velocity = Vector3.forward * carSpeed;
+        _rBody.velocity = transform.forward * carSpeed;
 
 
         if (Input.GetMouseButton(0))
@@ -37,13 +36,12 @@ public class CarController : Car
 
             carSpeed = Mathf.Lerp(carSpeed, _topSpeed, Time.deltaTime / 6);
 
-            if (transform.position.x > -2)
-                _rBody.velocity += -Vector3.right * (carSpeed * 0.5f);
-
-            if (transform.position.x > -1.5f)
-                RotatePlayerModel(transform.position + transform.right * -2 + transform.forward * 3.5f);
+            if (transform.position.x > -1.8f)
+                RotatePlayerModel(transform.position + -Vector3.right * 2 + Vector3.forward * 5.5f);
+            else if (transform.position.x < -2f)
+                RotatePlayerModel(transform.position + Vector3.right * 2 + Vector3.forward * 5.5f);
             else
-                RotatePlayerModel(transform.position + transform.forward * 2);
+                RotatePlayerModel(transform.position + Vector3.forward * 10.5f);
 
             _myCamera.CameraEffect(true);
 
@@ -52,13 +50,14 @@ public class CarController : Car
         {
             AvoidObstacles();
 
-            if (transform.position.x < 2)
-                _rBody.velocity += Vector3.right * (carSpeed * 0.5f);
-
-            if (transform.position.x < 1.5f)
-                RotatePlayerModel(transform.position + transform.right * 2 + transform.forward * 3.5f);
+            if (transform.position.x < 1.8f)
+                RotatePlayerModel(transform.position + Vector3.right * 2 + Vector3.forward * 5.5f);
+            else if (transform.position.x > 2f)
+                RotatePlayerModel(transform.position + -Vector3.right * 2 + Vector3.forward * 5.5f);
             else
-                RotatePlayerModel(transform.position + transform.forward * 5);
+            {
+                RotatePlayerModel(transform.position + Vector3.forward * 10.5f);
+            }
 
             if (carSpeed < _damageThreshold)
                 _myCamera.CameraEffect(false);
@@ -70,7 +69,7 @@ public class CarController : Car
         Vector3 dir = target - transform.position;
         dir.y = 0;
         Quaternion rot = Quaternion.LookRotation(dir);
-        _carModel.transform.rotation = Quaternion.Slerp(_carModel.transform.rotation, rot, Time.deltaTime * 3.5f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * 2.5f);
        
     }
     public override void AvoidObstacles()

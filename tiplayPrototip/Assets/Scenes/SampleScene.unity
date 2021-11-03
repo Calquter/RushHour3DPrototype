@@ -1597,9 +1597,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eeeacfb0fb8b29438b5edbcf07e1344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _backSpace: -2
+  _backSpace: 3
   _upSpace: 3.7
-  _lerpSpeed: 0.2
+  _lerpSpeed: 0.1
   _fovSpeed: 0.9
 --- !u!20 &1687258584
 Camera:

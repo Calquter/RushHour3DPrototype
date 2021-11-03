@@ -26,7 +26,6 @@ public class CameraFollow : MonoBehaviour
         Transform playerTransform = GameManager.instance.playerOBJ.transform;
 
         _newPos = playerTransform.position + playerTransform.forward * _backSpace + playerTransform.up * _upSpace;
-        print(_newPos);
         transform.position = Vector3.Lerp(transform.position, _newPos, _lerpSpeed * GameManager.instance.playerOBJ.GetComponent<CarController>().carSpeed * Time.deltaTime);
     }
 
