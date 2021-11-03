@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class CarNPC : Car
 {
+
+    private void Start()
+    {
+        _rBody = GetComponent<Rigidbody>();
+    }
     void Update()
     {
         _rBody.velocity = transform.forward * carSpeed;
@@ -11,11 +16,15 @@ public class CarNPC : Car
 
     public override void AvoidObstacles()
     {
-        throw new System.NotImplementedException();
+        
     }
 
+    public override void TakeDamage()
+    {
+        
+    }
     public override void CarCrash()
     {
-        throw new System.NotImplementedException();
+        
     }
 }
