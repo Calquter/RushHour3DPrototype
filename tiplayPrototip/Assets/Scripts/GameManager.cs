@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public bool isGameFinished;
+    public int gatheredGold;
 
     [Header("Referances")]
     public GameObject playerOBJ;
@@ -33,5 +34,16 @@ public class GameManager : MonoBehaviour
             return progress;
         }
         return UIManager.instance.finishSlider.maxValue;
+    }
+
+    public void Succes()
+    {
+        PlayerPrefs.SetInt("MyGold", PlayerPrefs.GetInt("MyGold") + gatheredGold);
+        PlayerPrefs.SetInt("MyCurrentLevel", PlayerPrefs.GetInt("MyCurrentLevel") + 1);
+    }
+
+    public void Failed()
+    {
+
     }
 }

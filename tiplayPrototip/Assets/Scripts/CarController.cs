@@ -40,7 +40,7 @@ public class CarController : Car
 
             carSpeed = Mathf.Lerp(carSpeed, _topSpeed, Time.deltaTime / 6);
 
-            if (transform.position.x > -1.8f)
+            if (transform.position.x > -1.5f)
                 RotatePlayerModel(transform.position + -Vector3.right * 2 + Vector3.forward * 5.5f);
             else if (transform.position.x < -2f)
                 RotatePlayerModel(transform.position + Vector3.right * 2 + Vector3.forward * 5.5f);
@@ -56,7 +56,7 @@ public class CarController : Car
         {
             AvoidObstacles();
 
-            if (transform.position.x < 1.8f)
+            if (transform.position.x < 1.5f)
                 RotatePlayerModel(transform.position + Vector3.right * 2 + Vector3.forward * 5.5f);
             else if (transform.position.x > 2f)
                 RotatePlayerModel(transform.position + -Vector3.right * 2 + Vector3.forward * 5.5f);
@@ -121,8 +121,6 @@ public class CarController : Car
                 else
                     TakeDamage();
 
-                print(Vector3.Dot(col.collider.transform.forward.normalized, obsttacleToPlayer.normalized));
-
                 carSpeed = _damageThreshold - 5;
             }
         }
@@ -133,6 +131,16 @@ public class CarController : Car
         {
             GameManager.instance.isGameFinished = true;
             _speedParticle.gameObject.SetActive(false);
+        }
+        else if (other.tag == "Obstacle")
+        {
+            if (carSpeed >= _damageThreshold)
+            {
+                GameManager.instance.gatheredGold += 10;
+                StopCoroutine(UIManager.instance.GoldTextTime());
+                StartCoroutine(UIManager.instance.GoldTextTime());
+            }
+            
         }
     }
 }
