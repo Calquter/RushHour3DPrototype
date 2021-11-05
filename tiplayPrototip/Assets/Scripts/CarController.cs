@@ -107,6 +107,7 @@ public class CarController : Car
     {
         isPlayerDead = true;
         carSpeed = 0;
+        GameManager.instance.Failed();
     }
     private void OnCollisionEnter(Collision col)
     {
@@ -129,8 +130,8 @@ public class CarController : Car
     {
         if (other.tag == "FinishLine")
         {
-            GameManager.instance.isGameFinished = true;
             _speedParticle.gameObject.SetActive(false);
+            GameManager.instance.Succes();
         }
         else if (other.tag == "Obstacle")
         {

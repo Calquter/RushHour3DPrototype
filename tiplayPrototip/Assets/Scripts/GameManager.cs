@@ -38,8 +38,13 @@ public class GameManager : MonoBehaviour
 
     public void Succes()
     {
-        PlayerPrefs.SetInt("MyGold", PlayerPrefs.GetInt("MyGold") + gatheredGold);
-        PlayerPrefs.SetInt("MyCurrentLevel", PlayerPrefs.GetInt("MyCurrentLevel") + 1);
+        if (!isGameFinished)
+        {
+            isGameFinished = true;
+            PlayerPrefs.SetInt("MyGold", PlayerPrefs.GetInt("MyGold") + gatheredGold);
+            PlayerPrefs.SetInt("MyCurrentLevel", PlayerPrefs.GetInt("MyCurrentLevel") + 1);
+        }
+        
     }
 
     public void Failed()

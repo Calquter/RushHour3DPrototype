@@ -12,10 +12,14 @@ public class UIManager : MonoBehaviour
     public Image healthSliderImage;
     public Slider finishSlider;
     public TMP_Text goldText;
+    [SerializeField] private TMP_Text _levelText;
 
     private void Awake() => instance = this;
 
-
+    private void Start()
+    {
+        _levelText.text = "Level " + (PlayerPrefs.GetInt("MyCurrentLevel") + 1);
+    }
     public IEnumerator GoldTextTime()
     {
         goldText.gameObject.SetActive(true);
